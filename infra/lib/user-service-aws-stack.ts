@@ -1,18 +1,19 @@
-import sns = require('@aws-cdk/aws-sns');
-import subs = require('@aws-cdk/aws-sns-subscriptions');
-import sqs = require('@aws-cdk/aws-sqs');
 import cdk = require('@aws-cdk/core');
+import lambda = require('@aws-cdk/aws-lambda');
+import apigw = require('@aws-cdk/aws-apigateway');
 
 export class UserServiceAwsStack extends cdk.Stack {
   constructor(scope: cdk.App, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    const queue = new sqs.Queue(this, 'UserServiceAwsQueue', {
-      visibilityTimeout: cdk.Duration.seconds(300)
+    const loginHandler = new lambda.Function(this, 'loginHandler', {
+      runtime: lambda.Runtime.NODEJS_12_X,
+      code: lambda.Code.asset('../../functions'),
+      handler: 'login.handler'
     });
 
-    const topic = new sns.Topic(this, 'UserServiceAwsTopic');
-
-    topic.addSubscription(new subs.SqsSubscription(queue));
+    new apigw.LambdaRestApi(this, 'loginEndpoint', {
+      handler: loginHandler
+    });
   }
 }

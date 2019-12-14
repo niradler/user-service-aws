@@ -1,6 +1,0 @@
-{
-  "app": "npx ts-node bin/user-service-aws.ts",
-  "context": {
-    "@aws-cdk/core:enableStackNameDuplicates": "true"
-  }
-}

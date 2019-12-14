@@ -8,7 +8,11 @@
     "build": "tsc",
     "watch": "tsc -w",
     "test": "jest",
-    "cdk": "cdk"
+    "cdk": "cdk",
+    "cdk-init": "npm run cdk -- init sample-app --language typescript",
+    "deploy": "npm run cdk -- deploy",
+    "diff": "npm run cdk -- diff",
+    "bootstrap": "npm run cdk -- bootstrap"
   },
   "devDependencies": {
     "aws-cdk": "^1.18.0",
@@ -21,9 +25,10 @@
     "typescript": "~3.7.2"
   },
   "dependencies": {
+    "@aws-cdk/aws-apigateway": "^1.18.0",
+    "@aws-cdk/aws-lambda": "^1.18.0",
     "@aws-cdk/aws-sns": "^1.18.0",
     "@aws-cdk/aws-sns-subscriptions": "^1.18.0",
-    "@aws-cdk/aws-sqs": "^1.18.0",
     "@aws-cdk/core": "^1.18.0"
   }
 }

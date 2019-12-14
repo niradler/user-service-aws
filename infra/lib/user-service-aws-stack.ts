@@ -8,7 +8,7 @@ export class UserServiceAwsStack extends cdk.Stack {
 
     const loginHandler = new lambda.Function(this, 'loginHandler', {
       runtime: lambda.Runtime.NODEJS_12_X,
-      code: lambda.Code.asset('../../functions'),
+      code: lambda.Code.asset('../functions'),
       handler: 'login.handler'
     });
 

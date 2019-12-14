@@ -1,5 +1,5 @@
 {
-  "name": "user-service-aws",
+  "name": "user-service-aws-infra",
   "version": "0.1.0",
   "bin": {
     "user-service-aws": "bin/user-service-aws.js"

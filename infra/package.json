@@ -11,6 +11,7 @@
     "cdk": "cdk",
     "cdk-init": "npm run cdk -- init sample-app --language typescript",
     "deploy": "npm run cdk -- deploy",
+    "destroy": "npm run cdk -- destroy",
     "diff": "npm run cdk -- diff",
     "bootstrap": "npm run cdk -- bootstrap"
   },
@@ -26,6 +27,7 @@
   },
   "dependencies": {
     "@aws-cdk/aws-apigateway": "^1.18.0",
+    "@aws-cdk/aws-dynamodb": "^1.18.0",
     "@aws-cdk/aws-lambda": "^1.18.0",
     "@aws-cdk/aws-sns": "^1.18.0",
     "@aws-cdk/aws-sns-subscriptions": "^1.18.0",

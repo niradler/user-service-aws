@@ -12,3 +12,8 @@ generic user service on aws cloud for fast prototype.
 cd infra
 npm run deploy
 ```
+
+## TODO
+
+- use only one apigateway and stages
+- solution for multi package.json (lerna etc...)

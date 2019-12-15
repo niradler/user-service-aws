@@ -8,35 +8,92 @@ export class UserServiceAwsStack extends cdk.Stack {
     super(scope, id, props);
 
     const usersTable = new dynamodb.Table(this, 'Users', {
-      partitionKey: { name: 'email', type: dynamodb.AttributeType.STRING }
+      partitionKey: { name: 'id', type: dynamodb.AttributeType.STRING }
     });
 
-    const registerHandler = new lambda.Function(this, 'registerHandler', {
-      runtime: lambda.Runtime.NODEJS_12_X,
-      code: lambda.Code.asset('../functions'),
+    const registerHandler = createLambda(this, 'registerHandler', {
       handler: 'register.handler',
       environment: {
         USERS_TABLE_NAME: usersTable.tableName
       }
     });
 
+    const loginHandler = createLambda(this, 'loginHandler', {
+      handler: 'login.handler',
+      environment: {
+        USERS_TABLE_NAME: usersTable.tableName
+      }
+    });
+
+    const getUsersHandler = createLambda(this, 'getUsersHandler', {
+      handler: 'get-users.handler',
+      environment: {
+        USERS_TABLE_NAME: usersTable.tableName
+      }
+    });
+
     usersTable.grantReadWriteData(registerHandler);
+    usersTable.grantReadWriteData(loginHandler);
+    usersTable.grantReadWriteData(getUsersHandler);
 
-    new apigw.LambdaRestApi(this, 'registerEndpoint', {
-      handler: registerHandler
+    const userServiceApi = new apigw.RestApi(this, 'userServiceApi', {
+      restApiName: 'Users Service'
     });
+    const usersRootResource = userServiceApi.root.addResource('/');
+    
+     const usersResource = usersRootResource.addResource('users');
+    const getUsersIntegration = new apigw.LambdaIntegration(getUsersHandler);
+    usersResource.addMethod('GET', getUsersIntegration);
+    addCorsOptions(usersResource)
 
-    const loginHandler = new lambda.Function(this, 'loginHandler', {
-      runtime: lambda.Runtime.NODEJS_12_X,
-      code: lambda.Code.asset('../functions'),
-      handler: 'login.handler'
-    });
-
-    new apigw.LambdaRestApi(this, 'loginEndpoint', {
-      handler: loginHandler
-    });
-
-
+    const registerResource = usersResource.addResource('register');
+    const registerIntegration = new apigw.LambdaIntegration(registerHandler);
+    registerResource.addMethod('POST', registerIntegration);
+    addCorsOptions(registerResource)
+    
+    const loginResource = usersResource.addResource('login');
+    const loginIntegration = new apigw.LambdaIntegration(loginHandler);
+    loginResource.addMethod('POST', loginIntegration);
+    addCorsOptions(loginResource);
 
   }
+}
+
+export function addCorsOptions(apiResource: apigw.IResource) {
+  apiResource.addMethod('OPTIONS', new apigw.MockIntegration({
+    integrationResponses: [{
+      statusCode: '200',
+      responseParameters: {
+        'method.response.header.Access-Control-Allow-Headers': "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
+        'method.response.header.Access-Control-Allow-Origin': "'*'",
+        'method.response.header.Access-Control-Allow-Credentials': "'false'",
+        'method.response.header.Access-Control-Allow-Methods': "'OPTIONS,GET,PUT,POST,DELETE'",
+      },
+    }],
+    passthroughBehavior: apigw.PassthroughBehavior.NEVER,
+    requestTemplates: {
+      "application/json": "{\"statusCode\": 200}"
+    },
+  }), {
+    methodResponses: [{
+      statusCode: '200',
+      responseParameters: {
+        'method.response.header.Access-Control-Allow-Headers': true,
+        'method.response.header.Access-Control-Allow-Methods': true,
+        'method.response.header.Access-Control-Allow-Credentials': true,
+        'method.response.header.Access-Control-Allow-Origin': true,
+      },
+    }]
+  })
+}
+
+export function createLambda(self: any, name: string, props?: any) {
+  const _props = Object.assign({
+    runtime: lambda.Runtime.NODEJS_12_X,
+    code: lambda.Code.asset('../functions'),
+    environment: {
+    }
+  }, props || {})
+
+  return new lambda.Function(self, name, _props);
 }

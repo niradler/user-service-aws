@@ -47,7 +47,7 @@ export class UserServiceAwsStack extends cdk.Stack {
     const userServiceApi = new apigw.RestApi(this, "userServiceApi", {
       restApiName: "Users Service"
     });
-    const usersRootResource = userServiceApi.root.addResource("/");
+    const usersRootResource = userServiceApi.root.addResource("v1");
 
     const usersResource = usersRootResource.addResource("users");
     const getUsersIntegration = new apigw.LambdaIntegration(getUsersHandler);

@@ -1,6 +1,6 @@
 # User Service AWS
 
-generic user service on aws cloud for fast prototype.
+generic user service on aws cloud deployed with cdk for fast prototype.
 
 ## Usage
 

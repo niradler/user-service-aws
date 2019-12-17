@@ -15,5 +15,4 @@ npm run deploy
 
 ## TODO
 
-- use only one apigateway and stages
 - solution for multi package.json (lerna etc...)

@@ -114,7 +114,7 @@ export function createLambda(self: any, name: string, props?: any) {
   const _props = Object.assign(
     {
       runtime: lambda.Runtime.NODEJS_12_X,
-      code: lambda.Code.asset("../functions"),
+      code: lambda.Code.asset("../functions/handlers"),
       environment: {}
     },
     props || {}

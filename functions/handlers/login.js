@@ -1,5 +1,6 @@
 const { DynamoDB } = require("aws-sdk");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
+
 const compare = (password, hash) =>
   new Promise((resolve, reject) => {
     bcrypt.compare(password, hash, function(err, res) {
@@ -13,7 +14,10 @@ exports.handler = async function(event) {
     const request = JSON.parse(event.body);
     const db = new DynamoDB.DocumentClient();
     const user = await db
-      .get({ TableName: process.env.USERS_TABLE_NAME, Key: request.email })
+      .get({
+        TableName: process.env.USERS_TABLE_NAME,
+        Key: { email: request.email }
+      })
       .promise();
     const isAuth = await compare(request.password, user.password);
     return {

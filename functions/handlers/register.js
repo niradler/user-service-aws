@@ -1,11 +1,11 @@
 const { DynamoDB } = require("aws-sdk");
 const uuidv4 = require("uuid/v4");
+const bcrypt = require("bcryptjs");
 const PRIMARY_KEY = "id";
-const bcrypt = require("bcrypt");
 
 const hash = password =>
   new Promise((resolve, reject) => {
-    bcrypt.hash("myPassword", 10, function(err, hash) {
+    bcrypt.hash(password, 10, function(err, hash) {
       if (err) reject(err);
       else resolve(hash);
     });

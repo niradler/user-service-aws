@@ -12,28 +12,28 @@ export class UserServiceAwsStack extends cdk.Stack {
     });
 
     const registerHandler = createLambda(this, "registerHandler", {
-      handler: "register.handler",
+      handler: "handlers/register.handler",
       environment: {
         USERS_TABLE_NAME: usersTable.tableName
       }
     });
 
     const loginHandler = createLambda(this, "loginHandler", {
-      handler: "login.handler",
+      handler: "handlers/login.handler",
       environment: {
         USERS_TABLE_NAME: usersTable.tableName
       }
     });
 
     const getUsersHandler = createLambda(this, "getUsersHandler", {
-      handler: "get-users.handler",
+      handler: "handlers/get-users.handler",
       environment: {
         USERS_TABLE_NAME: usersTable.tableName
       }
     });
 
     const getUserHandler = createLambda(this, "getUserHandler", {
-      handler: "get-user.handler",
+      handler: "handlers/get-user.handler",
       environment: {
         USERS_TABLE_NAME: usersTable.tableName
       }
@@ -114,7 +114,7 @@ export function createLambda(self: any, name: string, props?: any) {
   const _props = Object.assign(
     {
       runtime: lambda.Runtime.NODEJS_12_X,
-      code: lambda.Code.asset("../functions/handlers"),
+      code: lambda.Code.asset("../functions"),
       environment: {}
     },
     props || {}
